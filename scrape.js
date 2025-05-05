@@ -4,7 +4,13 @@ const puppeteer = require("puppeteer");
 (async () => {
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    executablePath: '/usr/bin/chromium-browser', // gebruik systeem-chromium
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-gpu",
+      "--disable-dev-shm-usage"
+    ],
   });
 
   const page = await browser.newPage();
