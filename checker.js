@@ -64,6 +64,7 @@ function sendNotification(oldResults, newResults, forceSend = false) {
   if (changed) {
     htmlMessage += "<p>De volgende tankstations hebben nieuwe prijzen:</p><ul>";
 
+    // Toon enkel gewijzigde prijzen
     const lines = newResults.map((station, index) => {
       const oldPrice = oldResults[index]?.prijs;
       const newPrice = station.prijs;
@@ -75,11 +76,20 @@ function sendNotification(oldResults, newResults, forceSend = false) {
     });
 
     htmlMessage += lines.join("") + "</ul>";
+
+    // Voeg alle huidige prijzen toe
+    htmlMessage += "<br><h3>📋 Actuele prijzen (alle tankstations)</h3><ul>";
+
+    newResults.forEach((station) => {
+      htmlMessage += `<li><strong>${station.naam}</strong>: ${station.prijs}</li>`;
+    });
+
+    htmlMessage += "</ul>";
   } else {
     htmlMessage +=
       "<p>✅ Er zijn geen prijsveranderingen vandaag. Huidige prijzen:</p><ul>";
 
-    // Voeg alle tankstations toe aan de e-mail
+    // Toon alle tankstations
     newResults.forEach((station) => {
       htmlMessage += `<li><strong>${station.naam}</strong>: ${station.prijs}</li>`;
     });
@@ -103,7 +113,7 @@ function sendNotification(oldResults, newResults, forceSend = false) {
     from: `"Brandstof Checker" <${process.env.EMAIL_USER}>`,
     to: process.env.EMAIL_TO,
     subject: changed
-      ? "⚠️ Brandstofprijs gewijzigd!"
+      ? "⚠️ Brandstofprijs gewijzigd! (overzicht binnen)"
       : "✅ Geen prijsveranderingen",
     html: htmlMessage,
   };
